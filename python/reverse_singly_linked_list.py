@@ -1,5 +1,4 @@
 from typing import overload
-from copy import deepcopy
 
 
 class Node:
@@ -18,38 +17,11 @@ class Node:
 
 
 class LinkedList:
-    @overload
-    def __init__(self, param: int):
-        ...
-
-    @overload
-    def __init__(self, param: Node):
-        ...
-
-    @overload
-    def __init__(self, param: None):
-        ...
-
-    def __init__(self, param):
-        if isinstance(param, Node):
-            self.head_node = Node(param.value)
-        else:
-            self.head_node = Node(param)
-
-    @overload
-    def insert_beginning(self, var: int):
-        ...
-
-    @overload
-    def insert_beginning(self, var: Node):
-        ...
+    def __init__(self, value=None):
+        self.head_node = Node(value)
 
     def insert_beginning(self, new_value):
-        if isinstance(new_value, Node):
-            new_node = new_value
-        else:
-            new_node = Node(new_value)
-
+        new_node = Node(new_value)
         new_node.set_next_node(self.head_node)
         self.head_node = new_node
 
@@ -96,11 +68,11 @@ def make_linked_list(l: list) -> LinkedList:
 
 
 def reverse_linked_list(ll: LinkedList) -> LinkedList:
-    new_ll = LinkedList(ll.head_node)
-    ll.head_node = ll.head_node.next_node
-    while ll.head_node.get_next_node() is not None:
-        new_ll.insert_beginning(deepcopy(ll.head_node))
-        ll.head_node = ll.head_node.next_node
+    new_ll = LinkedList()
+    if ll.head_node is not None:
+        while ll.head_node.get_next_node() is not None:
+            new_ll.insert_beginning(ll.head_node.get_value())
+            ll.head_node = ll.head_node.next_node
 
     return new_ll
 
