@@ -1,3 +1,7 @@
+from typing import overload
+from copy import deepcopy
+
+
 class Node:
     def __init__(self, value, next_node=None):
         self.value = value
@@ -14,14 +18,38 @@ class Node:
 
 
 class LinkedList:
-    def __init__(self, value=None):
-        self.head_node = Node(value)
+    @overload
+    def __init__(self, param: int):
+        ...
 
-    def get_head_node(self):
-        return self.head_node
+    @overload
+    def __init__(self, param: Node):
+        ...
+
+    @overload
+    def __init__(self, param: None):
+        ...
+
+    def __init__(self, param):
+        if isinstance(param, Node):
+            self.head_node = Node(param.value)
+        else:
+            self.head_node = Node(param)
+
+    @overload
+    def insert_beginning(self, var: int):
+        ...
+
+    @overload
+    def insert_beginning(self, var: Node):
+        ...
 
     def insert_beginning(self, new_value):
-        new_node = Node(new_value)
+        if isinstance(new_value, Node):
+            new_node = new_value
+        else:
+            new_node = Node(new_value)
+
         new_node.set_next_node(self.head_node)
         self.head_node = new_node
 
@@ -38,51 +66,50 @@ class LinkedList:
 
     def print_linked_list(self):
         string_list = ""
-        current_node = self.get_head_node()
+        current_node = self.head_node
         while current_node:
             if current_node.get_value() is not None:
-                string_list += str(current_node.get_value()) + "\n"
+                string_list += str(current_node.get_value()) + ' '
             current_node = current_node.get_next_node()
         print(string_list)
 
-    def remove_node(self, value_to_remove):
-        current_node = self.get_head_node()
-        if current_node.get_value() == value_to_remove:
-            self.head_node = current_node.get_next_node()
+    def remove_node(self, node_to_remove):
+        current_node = self.head_node
+        if current_node == node_to_remove:
+            self.head_node = current_node.next_node
         else:
             while current_node:
-                next_node = current_node.get_next_node()
-                if next_node.get_value() == value_to_remove:
+                next_node = current_node.next_node
+                if next_node == node_to_remove:
                     current_node.set_next_node(next_node.get_next_node())
                     current_node = None
                 else:
                     current_node = next_node
 
 
-def make_linked_list(l):
-    ll = LinkedList()
+def make_linked_list(l: list) -> LinkedList:
+    ll = LinkedList(None)
     for val in reversed(l):
         ll.insert_beginning(val)
 
     return ll
 
 
-def reverse_linked_list(ll):
-    new_ll = LinkedList()
-    while ll.get_head_node() is not None:
-        new_ll.insert_beginning(ll.get_head_node().get_value())
-        ll.remove_node(ll.get_head_node().get_value())
+def reverse_linked_list(ll: LinkedList) -> LinkedList:
+    new_ll = LinkedList(ll.head_node)
+    ll.head_node = ll.head_node.next_node
+    while ll.head_node.get_next_node() is not None:
+        new_ll.insert_beginning(deepcopy(ll.head_node))
+        ll.head_node = ll.head_node.next_node
 
+    return new_ll
 
 
 print("Original")
-demo_list = make_linked_list([4,8,15])
+demo_list = make_linked_list([4, 8, 15])
 demo_list.print_linked_list()
 print("Reversed")
 reverse = reverse_linked_list(demo_list)
 reverse.print_linked_list()
 print("Original Unchanged")
 demo_list.print_linked_list()
-
-
-
