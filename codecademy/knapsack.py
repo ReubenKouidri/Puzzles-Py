@@ -15,7 +15,8 @@ Create a knapsack() function that takes in:
 
 For example, let’s say your knapsack can carry 10 units of weight.
 The item weights are [3, 6, 8] and their values are [50, 60, 100].
-Your knapsack function should return 110 since you can carry the first and second items,
+Your knapsack function should return 110 since you can carry the first and
+second items,
 whose values total 110.
 If you tried to carry the third item, which has the value of 100,
 you wouldn’t be able to fit anything else in the knapsack.
@@ -25,7 +26,8 @@ you wouldn’t be able to fit anything else in the knapsack.
 def knapsack(weight_cap: int, weights: list[int], values: list[int]) -> int:
     possible_combos = []
 
-    if not weights or not values or len(weights) == 0 or len(values) == 0 or weight_cap == 0:
+    if not weights or not values or len(weights) == 0 or len(
+            values) == 0 or weight_cap == 0:
         return 0
 
     for i in range(len(weights)):
@@ -44,7 +46,18 @@ def knapsack(weight_cap: int, weights: list[int], values: list[int]) -> int:
     return max(sum(combo) for combo in possible_combos)
 
 
-weight_cap = 5
-weights = [1, 1, 3, 5]
-values = [250, 200, 300, 500]
-print(knapsack(weight_cap, weights, values))
+def test():
+    assert knapsack(5, [1, 1, 3, 5], [250, 200, 300, 500]) == 750
+    assert knapsack(10, [], []) == 0
+    assert knapsack(10, [5], [3]) == 3
+    assert knapsack(10, [1, 2, 3, 4], [6, 10, 12, 8]) == 36
+    assert knapsack(10, [5, 6, 7, 8], [3, 4, 5, 6]) == 6
+    assert knapsack(10, [5, 5, 5], [3, 4, 5]) == 9
+    assert knapsack(10, [1, 2, 3], [6, 10, 12]) == 28
+    assert knapsack(10, None, None) == 0
+    assert knapsack(10, None, []) == 0
+    assert knapsack(10, [], None) == 0
+
+
+if __name__ == "__main__":
+    test()
