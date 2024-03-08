@@ -1,35 +1,34 @@
-def find_highest_rhs(array, lhs_index):
-    highest_rhs = 0
-    for i in range(lhs_index + 1, len(array)):
-        highest_rhs = max(highest_rhs, array[i])
-    return highest_rhs, array[lhs_index:].index(highest_rhs) + lhs_index
+def capturing_rainwater(height):
+    if not height:
+        return 0
+
+    left, right = 0, len(height) - 1
+    left_max, right_max = height[left], height[right]
+    trapped_water = 0
+
+    while left < right:
+        if left_max < right_max:
+            left += 1
+            left_max = max(left_max, height[left])
+            trapped_water += max(0, left_max - height[left])
+        else:
+            right -= 1
+            right_max = max(right_max, height[right])
+            trapped_water += max(0, right_max - height[right])
+
+    return trapped_water
 
 
-def capturing_rainwater(heights):
-    volumes = [0] * len(heights)
-    lhs_index = 0
-    while heights[lhs_index] <= heights[lhs_index + 1]:
-        lhs_index += 1
-
-    highest_lhs = heights[lhs_index]
-    rhs_idx = lhs_index
-
-    while rhs_idx + 1 < len(heights):
-        highest_rhs, rhs_idx = find_highest_rhs(heights, lhs_index)
-        max_fill = min(highest_rhs, highest_lhs)
-
-        for i in range(lhs_index + 1, rhs_idx):  # fill between the lhs and rhs indices
-            volumes[i] = max_fill - heights[i]
-
-        lhs_index = rhs_idx
-        highest_lhs = highest_rhs
-
-    return sum(volumes)
+def tests():
+    assert capturing_rainwater([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]) == 6
+    assert capturing_rainwater([4, 2, 0, 3, 2, 5]) == 9
+    assert capturing_rainwater([5, 4, 1, 2]) == 1
+    assert capturing_rainwater(
+        [6, 4, 2, 0, 3, 2, 0, 3, 1, 4, 5, 3, 2, 7, 5, 3, 0, 1, 2, 1, 3, 4,
+         6, 8, 1, 3]) == 83
+    assert capturing_rainwater([9, 6, 8, 8, 5, 6, 3]) == 3
+    assert capturing_rainwater([8, 8, 1, 5, 6, 2, 5, 3, 3, 9]) == 31
 
 
-test_array = [4, 2, 1, 3, 0, 1, 2]
-test_array2 = [1, 2, 1, 3, 0, 1, 2]
-test_array3 = [0, 1, 2, 3, 0, 1, 2]
-# print(capturing_rainwater(test_array))
-# print(capturing_rainwater(test_array2))
-print(capturing_rainwater(test_array3))
+if __name__ == "__main__":
+    tests()
